@@ -1,4 +1,1 @@
 use ssh -Y, and implement a login system.
-
-todo rewrite in clone()
-http://blog.famzah.net/2009/11/20/a-much-faster-popen-and-system-implementation-for-linux/
