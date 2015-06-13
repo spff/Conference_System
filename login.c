@@ -18,6 +18,7 @@ int main(int argc, char **argv)
     char buff[BUFF_LEN];
     FILE *pin;
     int script_fd;
+    struct popen_noshell_pass_to_pclose pclose_arg;
     
     // get username and ip password
     printf("IP: ");
@@ -45,7 +46,6 @@ int main(int argc, char **argv)
       errExit("close");
     
     // execute script
-    struct popen_noshell_pass_to_pclose pclose_arg;
     pin = popen_noshell_compat("./login.sh", "w", &pclose_arg);
     if(!pin)
       errExit("popen_noshell_compat");
