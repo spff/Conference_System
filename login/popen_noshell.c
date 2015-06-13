@@ -127,11 +127,12 @@ void _popen_noshell_child_process(
 		dupped_child_fd = STDIN_FILENO;		/* dup the other pipe end to STDIN */
 	}
 	
-	/**** LIAO. 2015.6.13 *****/
+	
+	/************************** LIAO modify here. 2015.6.13 ********************************/
 	//if (popen_noshell_reopen_fd_to_dev_null(closed_child_fd) != 0) {
 	//	err(255, "popen_noshell_reopen_fd_to_dev_null(%d)", closed_child_fd);
 	//}
-	/**** LIAO. 2015.6.13 *****/
+	/********************************* LIAO. 2015.6.13 **************************************/
 	
 	if (_popen_noshell_close_and_dup(pipefd, closed_pipe_fd, dupped_child_fd) != 0) {
 		err(255, "_popen_noshell_close_and_dup(%d ,%d)", closed_pipe_fd, dupped_child_fd);
