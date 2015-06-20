@@ -57,11 +57,11 @@ class OneConnection{
         void start(string ip){
             this->ip = ip;
             GetUsrname();
-            if(CheckPermission())
+            if(CheckPermission() == false)
                 return;
 
             PopOutTerminal();
-
+cout << "hi";
             SendResolution();
 
             GetSignalTillEnd();
@@ -92,7 +92,7 @@ class OneConnection{
             ifstream ifs("record", ios::binary);
             stringstream buffer;
             buffer << ifs.rdbuf();
-            bool registered = buffer.str().find(ip + " " + usrname);
+            bool registered = (buffer.str().find(ip + " " + usrname) != string::npos);
             ifs.close();
 
             if(registered)
@@ -125,12 +125,12 @@ class OneConnection{
             buff = "xterm -e ssh -Y " + usrname + "@" + ip;
             ofstream script("login.sh");
             script << buff;
+            script.close();
 
             pin = popen_noshell_compat("./login.sh", "w", &pclose_arg);
             if(!pin)
               errExit("popen_noshell_compat");
-
-        cin >> cmd;//for blocking, should be replace...
+cin >> cmd;//for blocking, should be replace by better code
             pclose_noshell(&pclose_arg);
             printf("Bye\n");
             return 0;
@@ -143,6 +143,9 @@ class OneConnection{
             else if(iskeyboard){
                 KeyboardAct();
             }*/
+            while(true){
+
+            }
         }
 
 };
