@@ -2,6 +2,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 #include <X11/extensions/XTest.h>
+#include <X11/extensions/XInput2.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -94,10 +95,10 @@ Bool GenerateMouseEvent(int which, int what)
 }
 ******************************************************************************/
 
-
-void MoveMousePointer(int x, int y)
+/* New */
+void MoveMousePointer(int deviceid, int x, int y)
 {
-  XWarpPointer(dpy, None, window, 0, 0, 0, 0, x, y);
+  XIWarpPointer(dpy, deviceid, None, window, 0, 0, 0, 0, x, y);
   XFlush(dpy);
 }
 
@@ -110,4 +111,16 @@ void MoveMousePointer(int x, int y)
 Bool GenerateKeyEvent(unsigned int which, int what)
 {
   return XTestFakeKeyEvent(dpy, which, what==KeyPress, CurrentTime);
+}
+
+int main()
+{
+	int x=0, y=0;
+	init();
+	while(True)
+	{
+		usleep(1000);
+		MoveMousePointer(10, x+=1, y+=1);
+	}
+	return 0;
 }
