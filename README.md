@@ -35,3 +35,8 @@ the server will be concurrent
 EXPECT SHELL
 SSH
 an X-Server
+
+#TODO
+
+1.exception handling
+2.special key signal tranmission
