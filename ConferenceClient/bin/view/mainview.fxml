@@ -23,8 +23,8 @@
       </MenuBar>
       <ToolBar layoutY="29.0" prefHeight="40.0" prefWidth="342.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="29.0">
         <items>
-            <TextField fx:id="IP" prefHeight="26.0" prefWidth="132.0" promptText="IP" />
-            <TextField fx:id="port" prefHeight="26.0" prefWidth="63.0" promptText="port" />
+            <TextField fx:id="IP" prefHeight="26.0" prefWidth="132.0" promptText="IP" text="127.0.0.1" />
+            <TextField fx:id="port" prefHeight="26.0" prefWidth="63.0" promptText="port" text="3412" />
           <Button fx:id="button1" mnemonicParsing="false" onMousePressed="#button1Pressod" text=" connect  " />
             <Label fx:id="label1" prefHeight="22.0" prefWidth="896.0" text="Debug Label" />
         </items>

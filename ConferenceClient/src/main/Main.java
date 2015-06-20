@@ -23,7 +23,7 @@ public class Main extends Application {
 	BufferedReader in = null;
 	InetAddress host = null;
 
-	String usrname;
+	String usrname, resolution;
 	
 	public Main() {
 		instance = this;
@@ -71,8 +71,12 @@ public class Main extends Application {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
-			out.println(usrname);
-
+			out.write(usrname);
+			out.flush();
+			resolution = in.readLine();
+			System.out.println(resolution);
+			
+			
 		} catch (UnknownHostException e) {
 			System.err.println("Cannot find the host: " + host.getHostName());
 			System.exit(1);

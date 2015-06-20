@@ -6,7 +6,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
-#include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -17,6 +16,8 @@
 #include <vector>
 #include <set>
 #include <mutex>
+
+#include <X11/Xlib.h>
 
 
 extern "C" {
@@ -36,17 +37,14 @@ using namespace std;
 
 set<string> LockFileSet;
 mutex FileCheckMutex;
+
 class OneConnection{
 
     private:
 
-        vector<char> tempvector;
-        bool finishreading;
         char sendline[SNDBUFSIZE], recvline[RCVBUFSIZE];
         int sockfd;
         string cmd, ip, usrname;
-
-
 
     public:
 
@@ -56,22 +54,20 @@ class OneConnection{
 
         void start(string ip){
             this->ip = ip;
-            GetUsrname();
+            if(GetUsrname() != 0)
+                return;
             if(CheckPermission() == false)
                 return;
 
-            PopOutTerminal();
-cout << "hi";
             SendResolution();
 
-            GetSignalTillEnd();
+            thread t1{&OneConnection::PopOutTerminal, this};
+            thread t2{&OneConnection::GetSignalTillEnd, this};
 
-        }
-
-        ~OneConnection(){
+            t1.join();
+            t2.join();
             close(sockfd);
         }
-
 
     private:
         int GetUsrname(){
@@ -84,7 +80,6 @@ cout << "hi";
             }
             ss << recvline;
             ss >> usrname;
-
             return 0;
         }
 
@@ -113,16 +108,17 @@ cout << "hi";
         }
 
         void SendResolution(){
-
+            Display* disp = XOpenDisplay(NULL);
+            Screen*  scrn = DefaultScreenOfDisplay(disp);
+            string fakereso = scrn->width + " " + scrn->height;
+            write(sockfd, fakereso.c_str(), fakereso.length());
         }
 
         int PopOutTerminal(){
-            string buff;
             FILE *pin;
-            int script_fd;
             struct popen_noshell_pass_to_pclose pclose_arg;
 
-            buff = "xterm -e ssh -Y " + usrname + "@" + ip;
+            string buff = "xterm -e ssh -Y " + usrname + "@" + ip;
             ofstream script("login.sh");
             script << buff;
             script.close();
@@ -130,21 +126,28 @@ cout << "hi";
             pin = popen_noshell_compat("./login.sh", "w", &pclose_arg);
             if(!pin)
               errExit("popen_noshell_compat");
-cin >> cmd;//for blocking, should be replace by better code
             pclose_noshell(&pclose_arg);
             printf("Bye\n");
             return 0;
         }
 
         void GetSignalTillEnd(){
-            /*if(isMouse){
-                MouseAct();
-            }
-            else if(iskeyboard){
-                KeyboardAct();
-            }*/
-            while(true){
 
+            while(true){
+                int nbytes;
+                if((nbytes = recv(sockfd, recvline, RCVBUFSIZE, 0)) <= 0){
+                    cout << "Client disconnected." << endl;
+                    close(sockfd);
+                    return;
+                }
+                cout << recvline << endl;
+
+                /*if(isMouse){
+                    MouseAct();
+                }
+                else if(iskeyboard){
+                    KeyboardAct();
+                }*/
             }
         }
 
