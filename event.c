@@ -1,6 +1,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
+#include <X11/extensions/XTest.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 Display *dpy;
 Window window;
@@ -24,15 +28,21 @@ Bool init()
 
 /**
  * @param which: which button 
- * 	0 - "left",
- * 	1 - "middle",
- * 	2 - "right",
- * 	3 - "fourth",
- * 	4 - "fifth"
+ * 	1 - "left",
+ * 	2 - "middle",
+ * 	3 - "right",
+ * 	4 - "fourth",
+ * 	5 - "fifth"
  * @param what: what event is
  * 	ButtonPress
  * 	ButtonRelease
  */
+Bool GenerateMouseEvent(int which, int what)
+{
+  return XTestFakeButtonEvent(dpy, which, what==ButtonPress, CurrentTime);
+}
+
+/*****************************************************************************
 Bool GenerateMouseEvent(int which, int what)
 {
   XEvent event;
@@ -82,9 +92,22 @@ Bool GenerateMouseEvent(int which, int what)
   
   return rc;
 }
+******************************************************************************/
+
 
 void MoveMousePointer(int x, int y)
 {
   XWarpPointer(dpy, None, window, 0, 0, 0, 0, x, y);
   XFlush(dpy);
+}
+
+/**
+ * @param which: which key 
+ * @param what: what event is
+ * 	KeyPress
+ * 	KeyRelease
+ */
+Bool GenerateKeyEvent(unsigned int which, int what)
+{
+  return XTestFakeKeyEvent(dpy, which, what==KeyPress, CurrentTime);
 }
