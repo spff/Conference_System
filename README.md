@@ -32,9 +32,10 @@ the server will be concurrent
 ```
 #Requirements
 
-EXPECT SHELL
-SSH
-an X-Server
+EXPECT SHELL  
+SSH  
+an X-Server  
+kernel-devel
 
 #TODO
 
