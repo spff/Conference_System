@@ -19,6 +19,7 @@ class Client{
 private:
     char sendline[SNDBUFSIZE], recvline[RCVBUFSIZE];
     struct sockaddr_in servaddr;
+    int remotewidth, remoteheight;
 
 
     int ConnectionEstablishReturnSockfd(){
@@ -29,7 +30,7 @@ private:
         while(true){
 
             host = "127.0.0.1";
-            port = "3412";
+            port = "3413";
 
             if ((sockfd = socket (AF_INET, SOCK_STREAM, 0)) < 0){
                 cerr << "Problem in creating the socket" << endl;
@@ -51,14 +52,15 @@ private:
         }
     }
 
-    string GetResolution(int sockfd){
+    void GetResolution(int sockfd){
         string resolution;
 
         memset(recvline, '\0', RCVBUFSIZE);
         recv(sockfd, recvline, RCVBUFSIZE, 0);
         stringstream ss(recvline);
-        ss >> resolution;
-        return resolution;
+        ss >> remotewidth >> remoteheight;
+
+        return ;
     }
 
 public:
@@ -71,7 +73,8 @@ public:
         string msg = "spff";
         copy(msg.begin(), msg.end(), sendline);
         send(sockfd, sendline, SNDBUFSIZE, 0);
-        cout << GetResolution(sockfd) << endl;
+        GetResolution(sockfd);
+        cout << remotewidth << "*" << remoteheight << endl;
         while(true){
             if(msg == "bye"){
                 cout << "bye" << endl;
@@ -79,6 +82,8 @@ public:
                 return 0;
             }
             getline(cin, msg);
+    cout << "msg = \"" << msg << "\"" << endl;
+            memset(sendline, '\0', SNDBUFSIZE);
             copy(msg.begin(), msg.end(), sendline);
             send(sockfd, sendline, SNDBUFSIZE, 0);
         }
