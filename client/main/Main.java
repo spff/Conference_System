@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -17,11 +18,11 @@ public class Main extends Application {
 
 	private static Main instance;
 
-	Socket socket = null;
-	PrintWriter out = null;
-	BufferedReader in = null;
-	InetAddress host = null;
-
+	Socket socket;
+	PrintWriter out;
+	BufferedReader in;
+	InetAddress host;
+	
 	String usrname, resolution;
 	
 	public Main() {
@@ -65,7 +66,7 @@ public class Main extends Application {
 
 		System.out.println("Connect");
 		try {
-System.out.println(IP + " " + port);
+			System.out.println(IP + " " + port);
 
 			socket = new Socket(IP, Integer.parseInt(port));
 			out = new PrintWriter(socket.getOutputStream(), true);
@@ -73,12 +74,9 @@ System.out.println(IP + " " + port);
 					socket.getInputStream()));
 			
 			out.write(usrname);
-			
-			//resolution = in.readLine();
-			//THE PROGRAM BLOCK IF READ OR READLINE, NOT JUST READLINE...FXCK
-
-			//System.out.println(resolution);
-			
+			out.flush();//IMPORTANT
+			resolution = in.readLine();
+			System.out.println(resolution);
 			
 		} catch (UnknownHostException e) {
 			System.err.println("Cannot find the host: " + host.getHostName());
@@ -101,6 +99,7 @@ System.out.println(IP + " " + port);
 
 	public void sendSignal(String signal) {
 		out.write(signal);
+		out.flush();
 		System.out.println(signal);
 	}
 
