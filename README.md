@@ -32,7 +32,7 @@ the server will be concurrent
 ```
 #Requirements
 
-EXPECT SHELL  
+mate-terminal  
 SSH  
 an X-Server  
 kernel-devel
