@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1434875231 source:/home/spff/workspace/ConferenceServer/main.cpp
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<stdlib.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<fcntl.h>
+	<arpa/inet.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<signal.h>
+	<sys/prctl.h>
+	<iostream>
+	<sstream>
+	<fstream>
+	<thread>
+	<vector>
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+	<X11/Xresource.h>
+	<X11/extensions/XTest.h>
+	<X11/extensions/XInput2.h>
+
