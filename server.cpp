@@ -54,8 +54,8 @@ public:
         this->ip = ip;
         if(GetUsrname() != 0)
             return;
-        if(CheckPermission() == false)
-            return;
+        //if(CheckPermission() == false)
+        //    return;
 
         PopOutTerminalandSetPid();
         SendResolution();
@@ -83,13 +83,17 @@ private:
 
     bool CheckPermission(){
         ifstream ifs("record", ios::binary);
-        stringstream buffer;
-        buffer << ifs.rdbuf();
-        bool registered = (buffer.str().find(ip + " " + usrname) != string::npos);
+        string buffer;
+        bool registered = false;
+        while(getline(ifs, buffer)){
+            registered = (buffer.find(ip + " " + usrname) != string::npos);
+            if(registered){
+                ifs.close();
+                return true;
+            }
+        }
         ifs.close();
 
-        if(registered)
-            return true;
         while(true){
             cout << "Accept connection?(y,n)";
             getline(cin, cmd);
@@ -109,8 +113,12 @@ private:
         Display* disp = XOpenDisplay(NULL);
         Screen*  scrn = DefaultScreenOfDisplay(disp);
         string resolution = to_string(scrn->width) + " " + to_string(scrn->height);
+        resolution += "\r\n";
+
+        memset(sendline, '\0', SNDBUFSIZE);
         copy(resolution.begin(), resolution.end(), sendline);
-        write(sockfd, sendline, SNDBUFSIZE);
+        write(sockfd, sendline, resolution.length());
+
     }
 
     void GeneratePointer(){
@@ -144,6 +152,7 @@ private:
 
         return EXIT_SUCCESS;
     }
+
 
     void GetSignalTillEnd(){
 
