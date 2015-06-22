@@ -32,12 +32,16 @@ the server will be concurrent
 ```
 #Requirements
 
-EXPECT SHELL  
+mate-terminal  
 SSH  
 an X-Server  
 kernel-devel
 
 #TODO
 
-1.exception handling
+1.exception handling  
 2.special key signal tranmission
+3.client menubutton function  
+4.dynamic generate remov virtual mouse/keyboard via xinput  
+5.client lock ui ratio  
+6.transmission protocol
