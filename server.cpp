@@ -121,10 +121,47 @@ private:
 
     }
 
-    void GeneratePointer(){
+    /**
+      * generate a new mouse pointer
+      * @param  name  given a mouse pointer name
+      * @return On success, generated mouse pointer's device id
+      *         On failure, return -1
+      */
+    int  GeneratePointer(char *name){
 
-        //run "xinput -create-master \"" + ip + usrname + "\"";
-        //find id by get the output of "xinput" and find the ip + usrname + " Pointer", and the next will be its id
+        XIAddMasterInfo c;
+        XIDeviceInfo *info;
+        int ndevices, deviceid, i;
+        const int MaxNameLen = 1024;
+        char devicename[MaxNameLen];
+
+
+        deviceid = -1;
+        c.type = XIAddMaster;
+        c.name = name;
+        c.send_core = 1;
+        c.enable = 1;
+
+        Status s = XIChangeHierarchy(dpy, (XIAnyHierarchyChangeInfo*)&c, 1);
+
+        if (!s)
+        {
+          // get device id
+          info = XIQueryDevice(dpy, XIAllDevices, &ndevices);
+          strncpy(devicename, name, MaxNameLen);
+          strncat(devicename, " pointer", MaxNameLen);
+          for(i = 0; i < ndevices; i++)
+          {
+          // printf("device: %s\t id: %d\n", info[i].name, info[i].deviceid);
+          if (!strncmp(info[i].name, devicename, MaxNameLen))
+          {
+              deviceid = info[i].deviceid;
+              break;
+          }
+          }
+        }
+
+        return deviceid;
     }
 
     void RemovePointer(){
