@@ -38,6 +38,7 @@ private:
 
     char sendline[SNDBUFSIZE], recvline[RCVBUFSIZE];
     int sockfd;
+    int deviceid;
     string cmd, ip, usrname;
     pid_t terminalpid;
 
@@ -56,13 +57,13 @@ public:
             return;
         //if(CheckPermission() == false)
         //    return;
-
+	
         PopOutTerminalandSetPid();
         SendResolution();
-        GeneratePointer();
+        deviceid = GeneratePointer(ip);
         thread t{&OneConnection::GetSignalTillEnd, this};
         t.join();
-        RemovePointer();
+        RemovePointer(deviceid);
         kill(terminalpid, SIGTERM);
         close(sockfd);
     }
@@ -152,12 +153,12 @@ private:
           strncat(devicename, " pointer", MaxNameLen);
           for(i = 0; i < ndevices; i++)
           {
-          // printf("device: %s\t id: %d\n", info[i].name, info[i].deviceid);
-          if (!strncmp(info[i].name, devicename, MaxNameLen))
-          {
-              deviceid = info[i].deviceid;
-              break;
-          }
+	    // printf("device: %s\t id: %d\n", info[i].name, info[i].deviceid);
+	    if (!strncmp(info[i].name, devicename, MaxNameLen))
+	    {
+		deviceid = info[i].deviceid;
+		break;
+	    }
           }
         }
 
@@ -217,7 +218,21 @@ private:
                 close(sockfd);
                 return;
             }
-            cout << recvline << endl;
+            //cout << recvline << endl;
+
+            char split_char = ' ';
+            istringstream split(recvline), tempss;
+            vector<string> tokens;
+            for (string each; getline(split, each, split_char); tokens.push_back(each));
+            if(tokens[0] == "MOUSE_MOVED"){
+                double x, y;
+                tempss.str(tokens[2] + " " + tokens[3]);
+                tempss >> x >> y;
+                //MOVE YOUR MOUSE
+                //
+		MoveMousePointer(deviceid, (int)x, (int)y);
+                cout << x << " " << y << endl;
+            }
 
 
             /*if(isMouse){
