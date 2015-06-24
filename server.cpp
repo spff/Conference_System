@@ -164,9 +164,24 @@ private:
         return deviceid;
     }
 
-    void RemovePointer(){
-
-        //run "xinput -remove-master \"" + ip + usrname + "\"";
+    /**
+      * Remove a master device.
+      * By default, all attached devices are set to Floating, unless parameters are
+      * given.
+      *
+      * @param deviceid given a device id
+      * @return On success, zero
+      *         On failure, non-zero
+      */
+    int RemovePointer(int deviceid){
+      XIRemoveMasterInfo r;
+      int ret;
+      r.type = XIRemoveMaster;
+      r.deviceid = deviceid;
+      r.return_mode = XIFloating;
+      ret = XIChangeHierarchy(dpy, (XIAnyHierarchyChangeInfo*)&r, 1);
+      XFlush(dpy);
+      return ret;
     }
 
     int PopOutTerminalandSetPid(){
