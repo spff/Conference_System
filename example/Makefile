@@ -1,2 +1,2 @@
 all:
-	cc event.c -lX11 -lXtst -lXi -o event
+	cc example.c -lX11 -lXtst -lXi -o example
