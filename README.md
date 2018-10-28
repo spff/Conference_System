@@ -1,4 +1,4 @@
-# Conference_System
+# conference-system
 for network programming course
 the server will be concurrent
 
